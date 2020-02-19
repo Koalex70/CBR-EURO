@@ -1,10 +1,23 @@
-$(document).ready(function ()
-{
-    $("#dateFrom").mask("99-99-9999", {placeholder: "дд-мм-гггг" });
-    $("#dateTo").mask("99-99-9999", {placeholder: "дд-мм-гггг" });
+$(document).ready(function () {
+    $("#dateFrom").mask("99-99-9999", {placeholder: "дд-мм-гггг"});
+    $("#dateTo").mask("99-99-9999", {placeholder: "дд-мм-гггг"});
 
     $("form").on("submit", function (event) {
         var $form = $(this);
+
+        if ($('#dateFrom').val() === '') {
+            $('#error').text("Ошибка!!! Не заполнено поле 'Дата с'!!! ");
+            return false;
+        } else {
+            $('#error').text("");
+        }
+
+        if ($('#dateTo').val() === '') {
+            $('#error').text("Ошибка!!! Не заполнено поле 'Дата по'!!! ");
+            return false;
+        } else {
+            $('#error').text("");
+        }
 
         $.ajax({
             type: 'POST',
@@ -32,7 +45,6 @@ $(document).ready(function ()
             }
         });
 
-        //отмена действия по умолчанию для кнопки submit
         event.preventDefault();
     });
 });

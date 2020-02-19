@@ -1,5 +1,6 @@
 <div class="container">
     <h1>Курс Евро</h1>
+    <h3 id="error"></h3>
     <h3>Вводите дату в формате "дд-мм-гггг"</h3>
     <h4 id="error-log"></h4>
     <form method="post">
