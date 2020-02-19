@@ -16,6 +16,8 @@ class Controller_Main extends Controller
      */
     function action_index()
     {
+        $this->model->migrate();
+
         $dateFrom = new DateTime();
         $dateFrom->modify('-1 day');
 

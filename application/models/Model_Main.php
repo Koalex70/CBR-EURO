@@ -28,6 +28,16 @@ class Model_Main extends Model
         ]);
     }
 
+    public function migrate()
+    {
+        $this->dbh->query('CREATE TABLE rates (id INT AUTO_INCREMENT NOT NULL, date DATE NOT NULL, value DOUBLE PRECISION NOT NULL, PRIMARY KEY(id));');
+        $this->dbh->query('CREATE TABLE links (id INT AUTO_INCREMENT NOT NULL, value VARCHAR(255) NOT NULL, PRIMARY KEY(id));');
+
+        if (empty($this->GetCBRLink())) {
+            $this->AddCBRLink();
+        }
+    }
+
     public function AddCBRLink()
     {
         $sth = $this->dbh->prepare("INSERT INTO `links` SET `value` = :value");
