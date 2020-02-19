@@ -10,6 +10,10 @@ class Controller_Main extends Controller
         $this->view = new View();
     }
 
+    /**
+     * Default action
+     * @throws Exception
+     */
     function action_index()
     {
         $dateFrom = new DateTime();
@@ -28,6 +32,10 @@ class Controller_Main extends Controller
         $this->view->generate('main_view.php', 'template_view.php', $data);
     }
 
+    /**
+     * This action accepts and processes an ajax request.
+     * @throws Exception
+     */
     public function action_ajax()
     {
         if (isset($_POST['dateFrom']) && !empty($_POST['dateFrom']) && isset($_POST['dateTo']) && !empty($_POST['dateTo'])) {
@@ -55,7 +63,13 @@ class Controller_Main extends Controller
         }
     }
 
-    private function takeFromDBOrXML($date)
+    /**
+     * This method searches for the euro exchange rate for the selected dates first in the database and
+     * if there is no such entry, it parses the xml file for the selected date and puts the values ​​in the database
+     * @param DateTime $date
+     * @return mixed|string|string[]
+     */
+    private function takeFromDBOrXML(DateTime $date)
     {
         if (empty($valueDate = $this->model->ReturnValueOrNullByDate($date->format('Y-m-d')))) {
             $valueDate = $this->takeRateFromXML($this->convertDateType($date->format('d-m-Y')));
@@ -65,6 +79,11 @@ class Controller_Main extends Controller
         return $valueDate;
     }
 
+    /**
+     * This method parses an xml file
+     * @param $date
+     * @return string|string[]
+     */
     private function takeRateFromXML($date)
     {
         $link = $this->model->GetCBRLink()[0]['value'];//Получаем ссылку на xml файл
@@ -78,6 +97,11 @@ class Controller_Main extends Controller
         }
     }
 
+    /**
+     * This method converts a date from one format to readable for xml file
+     * @param $date
+     * @return string|string[]
+     */
     private function convertDateType($date)
     {
         return str_replace('-', '/', $date);
