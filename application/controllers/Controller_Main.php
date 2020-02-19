@@ -12,35 +12,57 @@ class Controller_Main extends Controller
 
     function action_index()
     {
-        if (isset($_POST['dateFrom']) && !empty($_POST['dateFrom'])) {
-            $dateFrom = new DateTime($_POST['dateFrom']);
-        } else {
-            $dateFrom = new DateTime();
-            $dateFrom->modify('-1 day');
-        }
+        $dateFrom = new DateTime();
+        $dateFrom->modify('-1 day');
 
-        $dateTo = isset($_POST['dateTo']) && !empty($_POST['dateTo']) ? new DateTime($_POST['dateTo']) : new DateTime();
+        $dateTo = new DateTime();
 
         $data['dateFrom'] = $dateFrom->format('d-m-Y');
         $data['dateTo'] = $dateTo->format('d-m-Y');
 
-        if (!empty($valueDateFrom = $this->model->ReturnValueOrNullByDate($dateFrom->format('Y-m-d')))) {
-            $data['valueDateFrom'] = $valueDateFrom;
-        } else {
-            $data['valueDateFrom'] = $this->takeRateFromXML($this->convertDateType($dateFrom->format('d-m-Y')));
-            $this->model->AddNewRate($dateFrom->format('Y-m-d'), $data['valueDateFrom']);
-        }
-
-        if (!empty($valueDateTo = $this->model->ReturnValueOrNullByDate($dateTo->format('Y-m-d')))) {
-            $data['valueDateTo'] = $valueDateTo;
-        } else {
-            $data['valueDateTo'] = $this->takeRateFromXML($this->convertDateType($dateTo->format('d-m-Y')));
-            $this->model->AddNewRate($dateTo->format('Y-m-d'), $data['valueDateTo']);
-        }
+        $data['valueDateFrom'] = $this->takeFromDBOrXML($dateFrom);
+        $data['valueDateTo'] = $this->takeFromDBOrXML($dateTo);
 
         $data['difference'] = $data['valueDateFrom'] - $data['valueDateTo'];
 
         $this->view->generate('main_view.php', 'template_view.php', $data);
+    }
+
+    public function action_ajax()
+    {
+        if (isset($_POST['dateFrom']) && !empty($_POST['dateFrom']) && isset($_POST['dateTo']) && !empty($_POST['dateTo'])) {
+
+            $dateFrom = new DateTime($_POST['dateFrom']);
+            $dateTo = new DateTime($_POST['dateTo']);
+
+            $valueDateFrom = $this->takeFromDBOrXML($dateFrom);
+            $valueDateTo = $this->takeFromDBOrXML($dateTo);
+
+            $difference = $valueDateFrom - $valueDateTo;
+
+            echo json_encode([
+                'success' => true,
+                'dateFrom' => $_POST['dateFrom'],
+                'valueDateFrom' => $valueDateFrom,
+                'dateTo' => $_POST['dateTo'],
+                'valueDateTo' => $valueDateTo,
+                'difference' => $difference,
+            ]);
+        } else {
+            echo json_encode([
+                'error' => true
+            ]);
+        }
+    }
+
+    private function takeFromDBOrXML($date)
+    {
+        if (empty($valueDate = $this->model->ReturnValueOrNullByDate($date->format('Y-m-d')))) {
+            $valueDate = $this->takeRateFromXML($this->convertDateType($date->format('d-m-Y')));
+            $this->model->AddNewRate($date->format('Y-m-d'), $valueDate);
+        }
+
+        return $valueDate;
     }
 
     private function takeRateFromXML($date)
