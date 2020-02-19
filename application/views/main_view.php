@@ -9,8 +9,8 @@
         <input type="text" name="dateTo" id="dateTo" value="<?php echo $data['dateTo']; ?>">
         <input type="submit" value="Выбрать" id="submit-button">
     </form>
-    <h4>Значение курса евро на <?php echo $data['dateFrom']; ?>: <?php echo $data['valueDateFrom']; ?> руб.</h4>
-    <h4>Значение курса евро на <?php echo $data['dateTo']; ?>: <?php echo $data['valueDateTo']; ?> руб.</h4>
-    <h4>Разница между курсами за эти даты состовляет: <?php echo round($data['difference'], 4); ?> руб.</h4>
+    <h4 id="value-date-from">Значение курса евро на <?php echo $data['dateFrom']; ?>: <?php echo $data['valueDateFrom']; ?> ₽</h4>
+    <h4 id="value-date-to">Значение курса евро на <?php echo $data['dateTo']; ?>: <?php echo $data['valueDateTo']; ?> ₽</h4>
+    <h4 id="difference">Разница между курсами за эти даты состовляет: <?php echo round($data['difference'], 4); ?> ₽</h4>
 </div>
 

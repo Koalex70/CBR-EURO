@@ -12,11 +12,20 @@ $(document).ready(function ()
             url: 'Main/ajax',
             data: $form.serialize(),
             success: function (response) {
-                console.log('success');
                 console.log(response);
+                $('#value-date-from').text(
+                    `Значение курса евро на ${response.dateFrom}: ${response.valueDateFrom} ₽`
+                );
+
+                $('#value-date-to').text(
+                    `Значение курса евро на ${response.dateTo}: ${response.valueDateTo} ₽`
+                );
+
+                $('#difference').text(
+                    `Разница между курсами за эти даты составляет: ${response.difference.toFixed(4)} ₽`
+                );
             },
             error: function (jqXhr, textStatus, errorThrown) {
-                // alert("Ошибка '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
                 console.log(jqXhr);
                 console.log(textStatus);
                 console.log(errorThrown);
