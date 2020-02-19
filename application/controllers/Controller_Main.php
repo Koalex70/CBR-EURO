@@ -7,6 +7,10 @@ class Controller_Main extends Controller
     function __construct()
     {
         $this->model = new Model_Main();
+
+        //После первой загрузки контроллера можно удалить эту функцию из конструктора
+        $this->model->migrate();
+
         $this->view = new View();
     }
 
@@ -16,7 +20,6 @@ class Controller_Main extends Controller
      */
     function action_index()
     {
-        $this->model->migrate();
 
         $dateFrom = new DateTime();
         $dateFrom->modify('-1 day');
